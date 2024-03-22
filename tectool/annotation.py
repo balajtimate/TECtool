@@ -1602,7 +1602,8 @@ class Annotation(object):
 
                     # if the frame from the one but last exon is missing
                     # do not write the CDS for the novel transcript
-                    if penultimate_exon.frame is None:
+                    if penultimate_exon.frame is None \
+                            or penultimate_exon.frame == ".":
                         transcript.write_CDS = False
                         continue
 
