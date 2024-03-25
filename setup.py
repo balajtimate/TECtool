@@ -8,7 +8,7 @@ requirements = [
     "numpy>=0.13",
     "scipy==1.5.4",
     "htseq==0.13.5",
-    "pybedtools==0.7.10",
+    "pybedtools",
     "pyfasta==0.5.2",
     "scikit-learn==0.24.2",
     "pandas==0.20.3",
