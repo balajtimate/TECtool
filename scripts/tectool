@@ -40,6 +40,7 @@ import csv
 import functools
 from progress.bar import Bar
 import warnings
+import logging
 
 warnings.filterwarnings("ignore")
 
@@ -64,6 +65,20 @@ from tectool.bayes_classifier import BayesClassifier
 # Classes
 # -----------------------------------------------------------------------------
 
+LOGGER = logging.getLogger(__name__)
+
+def setup_logging() -> None:
+    """Configure logging.
+
+    Args:
+        verbosity: Level of logging verbosity.
+    """
+    level = logging.DEBUG
+    logging.basicConfig(
+        level=level,
+        format="[%(asctime)s %(levelname)s] %(message)s",
+        datefmt='%Y-%m-%d %H:%M:%S',
+    )
 
 class FileCounter(object):
 
@@ -336,6 +351,8 @@ def main():
         version=__version__
     )
 
+    setup_logging()
+
     # _________________________________________________________________________
     # -------------------------------------------------------------------------
     # get the arguments
@@ -421,10 +438,7 @@ def main():
     
     genome_internal_path = os.path.join(annotation_dir, 'genome.fa')
 
-    sys.stdout.write("Pre-processing genome file:\t {} {}".format(
-         options.genome, os.linesep
-        )
-    )
+    LOGGER.info(f"Pre-processing genome file:\t {options.genome}")
     genome_internal = open(genome_internal_path, 'w')
     with open(options.genome) as fp:
         for line in fp:
@@ -440,8 +454,7 @@ def main():
     # -------------------------------------------------------------------------
     # create the annotation object and read in the annotation file
     # -------------------------------------------------------------------------
-    sys.stdout.write("Reading annotation file:\t {} {}".format(
-        options.annotation, os.linesep))
+    LOGGER.info(f"Reading annotation file:\t {options.annotation}")
     annotation = Annotation(annotation_id=options.annotation,
                             tmp=options.output_dir)
     annotation.parse(options.annotation)
@@ -460,8 +473,7 @@ def main():
     # Determine exons of all genes and write them to a bed file
     # -------------------------------------------------------------------------
 
-    sys.stdout.write("Extracting exons per gene in bed format..." +
-                     os.linesep)
+    LOGGER.info("Extracting exons per gene in bed format...")
 
     exons_per_gene_bed_file = os.path.join(
         annotation_dir,
@@ -474,8 +486,7 @@ def main():
     # Determine transcripts of all genes and write them to a bed file
     # -------------------------------------------------------------------------
 
-    sys.stdout.write("Extracting transcripts per gene in bed format..." +
-                     os.linesep)
+    LOGGER.info("Extracting transcripts per gene in bed format...")
 
     transcripts_per_gene_bed_file = os.path.join(
         annotation_dir,
@@ -488,8 +499,7 @@ def main():
     # Determine genes and write them to a bed file
     # -------------------------------------------------------------------------
 
-    sys.stdout.write("Extracting genes in bed format..." +
-                     os.linesep)
+    LOGGER.info("Extracting genes in bed format...")
 
     genes_bed_file = os.path.join(
         annotation_dir,
@@ -502,8 +512,7 @@ def main():
     # Determine the union exon per gene
     # -------------------------------------------------------------------------
 
-    sys.stdout.write("Extracting union exons per gene in bed format..." +
-                     os.linesep)
+    LOGGER.info("Extracting union exons per gene in bed format...")
 
     union_exons_bed_file = os.path.join(
         annotation_dir,
@@ -518,8 +527,7 @@ def main():
     # in a gene might be part of an exon in another gene and vice versa.
     # -------------------------------------------------------------------------
 
-    sys.stdout.write("Extracting union introns per gene in bed format..." +
-                     os.linesep)
+    LOGGER.info("Extracting union introns per gene in bed format...")
 
     union_introns_bed_file = os.path.join(
         annotation_dir,
@@ -537,9 +545,9 @@ def main():
         # Find introns that do not overlap with other exons (stranded)
         # ---------------------------------------------------------------------
 
-        sys.stdout.write("Extracting union introns per gene that do not " +
-                         "overlap with exons in bed format for stranded " +
-                         "protocols..." + os.linesep)
+        LOGGER.info("Extracting union introns per gene that do not " +
+                    "overlap with exons in bed format for stranded " +
+                    "protocols...")
 
         introns_not_overlap_with_exons_bed_file = os.path.join(
             annotation_dir,
@@ -558,8 +566,8 @@ def main():
         # Find intronic poly(A) sites for stranded protocol
         # -------------------------------------------------------------------------
 
-        sys.stdout.write("Extracting intronic poly(A) sites for stranded " +
-                         "protocols..." + os.linesep)
+        LOGGER.info("Extracting intronic poly(A) sites for stranded " +
+                    "protocols...")
 
         polyasites_in_introns_bed_file = os.path.join(
             annotation_dir,
@@ -580,9 +588,9 @@ def main():
         # Find introns that do not overlap with other exons (unstranded)
         # ---------------------------------------------------------------------
 
-        sys.stdout.write("Extracting union introns per gene that do not " +
-                         "overlap with exons in bed format for unstranded " +
-                         "protocols..." + os.linesep)
+        LOGGER.info("Extracting union introns per gene that do not " +
+                    "overlap with exons in bed format for unstranded " +
+                    "protocols...")
 
         introns_not_overlap_with_exons_bed_file = os.path.join(
             annotation_dir,
@@ -600,8 +608,8 @@ def main():
         # Find intronic poly(A) sites for unstranded protocol
         # -------------------------------------------------------------------------
 
-        sys.stdout.write("Extracting intronic poly(A) sites for unstranded " +
-                         "protocols..." + os.linesep)
+        LOGGER.info("Extracting intronic poly(A) sites for unstranded " +
+                    "protocols...")
 
         polyasites_in_introns_bed_file = os.path.join(
             annotation_dir,
@@ -636,8 +644,8 @@ def main():
     # Determine all terminal exons from multi-exonic transcripts in bed format
     # -------------------------------------------------------------------------
 
-    sys.stdout.write("Extracting all terminal exons from " +
-                     "multi-exonic transcripts..." + os.linesep)
+    LOGGER.info("Extracting all terminal exons from " +
+                "multi-exonic transcripts...")
 
     all_terminal_exons_bed_file = os.path.join(
         annotation_dir,
@@ -652,8 +660,8 @@ def main():
     # format
     # -------------------------------------------------------------------------
 
-    sys.stdout.write("Extracting all intermediate exons from " +
-                     "multi-exonic transcripts..." + os.linesep)
+    LOGGER.info("Extracting all intermediate exons from " +
+                "multi-exonic transcripts...")
 
     all_intermediate_exons_bed_file = os.path.join(
         annotation_dir,
@@ -667,8 +675,8 @@ def main():
     # format
     # -------------------------------------------------------------------------
 
-    sys.stdout.write("Extracting all start exons from " +
-                     "multi-exonic transcripts..." + os.linesep)
+    LOGGER.info("Extracting all start exons from " +
+                "multi-exonic transcripts...")
 
     all_start_exons_bed_file = os.path.join(
         annotation_dir,
@@ -682,8 +690,8 @@ def main():
     # exons
     # -------------------------------------------------------------------------
 
-    sys.stdout.write("Extracting terminal exons that do not overlap " +
-                     "with other terminal exons..." + os.linesep)
+    LOGGER.info("Extracting terminal exons that do not overlap " +
+                "with other terminal exons...")
 
     terminal_exons_not_overlap_other_terminal_exons_bed_file = \
         os.path.join(
@@ -703,8 +711,8 @@ def main():
     # intermediate exons
     # -------------------------------------------------------------------------
 
-    sys.stdout.write("Extracting intermediate exons that do not overlap " +
-                     "with other intermediate exons..." + os.linesep)
+    LOGGER.info("Extracting intermediate exons that do not overlap " +
+                "with other intermediate exons...")
 
     intermediate_exons_not_overlap_other_intermediate_exons_bed_file = \
         os.path.join(
@@ -726,10 +734,9 @@ def main():
         # for stranded protocols
         # -------------------------------------------------------------------------
 
-        sys.stdout.write("Extracting terminal exons that do not overlap " +
-                         "with other exons (first exons, last exon or " +
-                         "intermediate exons) for stranded protocols..." +
-                         os.linesep)
+        LOGGER.info("Extracting terminal exons that do not overlap " +
+                    "with other exons (first exons, last exon or " +
+                    "intermediate exons) for stranded protocols...")
 
         terminal_exons_non_overlapping = \
             os.path.join(
@@ -752,10 +759,9 @@ def main():
         # for stranded protocols
         # -------------------------------------------------------------------------
 
-        sys.stdout.write("Extracting intermediate exons that do not overlap " +
-                         "with other exons (first exons, last exon or " +
-                         "intermediate exons) for stranded protocols..." +
-                         os.linesep)
+        LOGGER.info("Extracting intermediate exons that do not overlap " +
+                    "with other exons (first exons, last exon or " +
+                    "intermediate exons) for stranded protocols...")
 
         intermediate_exons_non_overlapping = \
             os.path.join(
@@ -779,9 +785,8 @@ def main():
         # the chromosome, start and end position
         # -------------------------------------------------------------------------
 
-        sys.stdout.write("Remove intermediate exons that overlap with other " +
-                         "intermediate exons on the opposite strand..." +
-                         os.linesep)
+        LOGGER.info("Remove intermediate exons that overlap with other " +
+                    "intermediate exons on the opposite strand...")
 
         intermediate_exons_non_overlapping_filtered = \
             os.path.join(
@@ -800,8 +805,8 @@ def main():
         # Find non overlapping genes
         # -------------------------------------------------------------------------
 
-        sys.stdout.write("Determining non overlapping genes for stranded " +
-                         "protocols..." + os.linesep)
+        LOGGER.info("Determining non overlapping genes for stranded " +
+                    "protocols...")
 
         non_overlapping_genes_bed = os.path.join(
             os.path.join(
@@ -825,10 +830,9 @@ def main():
         # for unstranded protocols
         # -------------------------------------------------------------------------
 
-        sys.stdout.write("Extracting terminal exons that do not overlap " +
-                         "with other exons (first exons, last exon or " +
-                         "intermediate exons) for unstranded protocols..." +
-                         os.linesep)
+        LOGGER.info("Extracting terminal exons that do not overlap " +
+                    "with other exons (first exons, last exon or " +
+                    "intermediate exons) for unstranded protocols...")
 
         terminal_exons_non_overlapping = \
             os.path.join(
@@ -851,10 +855,9 @@ def main():
         # for unstranded protocols
         # -------------------------------------------------------------------------
 
-        sys.stdout.write("Extracting intermediate exons that do not overlap " +
-                         "with other exons (first exons, last exon or " +
-                         "intermediate exons) for unstranded protocols..." +
-                         os.linesep)
+        LOGGER.info("Extracting intermediate exons that do not overlap " +
+                    "with other exons (first exons, last exon or " +
+                    "intermediate exons) for unstranded protocols...")
 
         intermediate_exons_non_overlapping = \
             os.path.join(
@@ -878,9 +881,8 @@ def main():
         # the chromosome, start and end position
         # -------------------------------------------------------------------------
 
-        sys.stdout.write("Remove intermediate exons that overlap with other " +
-                         "intermediate exons on the opposite strand..." +
-                         os.linesep)
+        LOGGER.info("Remove intermediate exons that overlap with other " +
+                    "intermediate exons on the opposite strand...")
 
         intermediate_exons_non_overlapping_filtered = \
             os.path.join(
@@ -899,8 +901,8 @@ def main():
         # Find non overlapping genes
         # -------------------------------------------------------------------------
 
-        sys.stdout.write("Determining non overlapping genes for unstranded " +
-                         "protocols..." + os.linesep)
+        LOGGER.info("Determining non overlapping genes for unstranded " +
+                    "protocols...")
 
         non_overlapping_genes_bed = os.path.join(
             os.path.join(
@@ -930,9 +932,9 @@ def main():
     # If an intronic polya site is shared between two genes, then the bed file
     # should contain 2 entries. One for each of the genes that is shared with.
     # -------------------------------------------------------------------------
-    sys.stdout.write("Determining feature regions (=region between an " +
-                     "intronic poly(A) site and the 3' end of the closest " +
-                     "upstream exon)..." + os.linesep)
+    LOGGER.info("Determining feature regions (=region between an " +
+                "intronic poly(A) site and the 3' end of the closest " +
+                "upstream exon)...")
 
     annotation.determine_feature_regions(
         polyasites=polyasites_in_introns_bed_file
@@ -943,7 +945,7 @@ def main():
     # Determine union exons length. The length for each of the genes is
     # stored in the annotations.gene[gene_id].union_exon_length variable
     # -----------------------------------------------------------------------
-    sys.stdout.write("Determining union exons lengths..." + os.linesep)
+    LOGGER.info("Determining union exons lengths...")
 
     annotation.determine_union_exon_length_per_gene(
         union_exons_bed=union_exons_bed_file
@@ -987,7 +989,7 @@ def main():
     # -------------------------------------------------------------------------
 
     # sys.stdout.write("Counting feature regions..." + os.linesep)
-
+    LOGGER.info("Counting feature regions...")
     bar = Bar(
         'Counting feature regions',
         max=len(list(aunits_dict.items()))
@@ -1043,7 +1045,8 @@ def main():
     # Create dictionary of multiexonic genes
     # (transcripts that consist of more than one exon).
     # -------------------------------------------------------------------------
-
+    LOGGER.info("Machine learning unit: Creating dictionary of genes " +
+                     "with multiexonic transcripts..." + os.linesep)
     genes_with_multiexonic_transcripts_dict = \
         annotation.get_genes_with_multiexonic_transcripts(
             bed=union_exons_bed_file
