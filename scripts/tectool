@@ -988,7 +988,6 @@ def main():
     # annotation object
     # -------------------------------------------------------------------------
 
-    # sys.stdout.write("Counting feature regions..." + os.linesep)
     LOGGER.info("Counting feature regions...")
     bar = Bar(
         'Counting feature regions',
@@ -1046,19 +1045,16 @@ def main():
     # (transcripts that consist of more than one exon).
     # -------------------------------------------------------------------------
     LOGGER.info("Machine learning unit: Creating dictionary of genes " +
-                     "with multiexonic transcripts..." + os.linesep)
+                     "with multiexonic transcripts...")
     genes_with_multiexonic_transcripts_dict = \
         annotation.get_genes_with_multiexonic_transcripts(
             bed=union_exons_bed_file
         )
 
     if options.verbose:
-        sys.stdout.write(
-            "Number of genes with multiple exons : {} {}".format(
-                str(len(genes_with_multiexonic_transcripts_dict)),
-                os.linesep
+        LOGGER.info(
+            f"Number of genes with multiple exons: {str(len(genes_with_multiexonic_transcripts_dict))}"
             )
-        )
 
     # _________________________________________________________________________
     # -------------------------------------------------------------------------
@@ -1071,12 +1067,8 @@ def main():
         )
 
     if options.verbose:
-        sys.stdout.write(
-            "Number of non overlapping genes: {} {}".format(
-                str(len(non_overlapping_genes_dict)),
-                os.linesep
-            )
-
+        LOGGER.info(
+            f"Number of non overlapping genes: {str(len(non_overlapping_genes_dict))}"
         )
 
     if not options.use_precalculated_training_set:
@@ -1084,10 +1076,8 @@ def main():
         genes_to_consider_for_ML = {x: non_overlapping_genes_dict[x] for x in non_overlapping_genes_dict if x in genes_with_multiexonic_transcripts_dict}
     
         if options.verbose:
-            sys.stdout.write(
-                "Number of genes to consider for training (intersection of non overlapping genes and genes with muliple exons): {} {}".format(
-                    str(len(genes_to_consider_for_ML)), os.linesep
-                )
+            LOGGER.info(
+                f"Number of genes to consider for training (intersection of non overlapping genes and genes with muliple exons): {str(len(genes_to_consider_for_ML))}"
             )
     
         # -------------------------------------------------------------------------
@@ -1218,10 +1208,7 @@ def main():
         for run_number in range(10):
     
             if options.verbose:
-                sys.stdout.write("Generating #{} training and validation datasets ... {}".format(
-                    str(run_number),
-                    os.linesep)
-                )
+                LOGGER.info(f"Generating #{str(run_number)} training and validation datasets ...")
     
             # ---------------------------------------------------------------------
             # Create dataframes and supplement with gene expression information
@@ -1243,9 +1230,7 @@ def main():
                 verbose=options.verbose
             )
             if options.verbose:
-                sys.stdout.write("After add_features_to_training_dataframes #{} \
-                                  ...{}".format(str(run_number),
-                                                os.linesep))
+                LOGGER.info(f"After add_features_to_training_dataframes #{str(run_number)}")
     
             # ---------------------------------------------------------------------
             # Sample training data
@@ -1259,10 +1244,7 @@ def main():
             )
     
             if options.verbose:
-                sys.stdout.write("After load_training_data #{} ...{}".format(
-                    str(run_number),
-                    os.linesep)
-                )
+                LOGGER.info(f"After load_training_data #{str(run_number)} ...")
     
             # Append to lists of training and validation datasets
             ml_train_unit.list_of_training_dataframes.append(
@@ -1271,10 +1253,7 @@ def main():
                 ml_train_unit.validation_df)
     
             if options.verbose:
-                sys.stdout.write("After appending the lists #{} ... {}".format(
-                    str(run_number),
-                    os.linesep)
-                )
+                LOGGER.info(f"After appending the lists #{str(run_number)} ...")
     
         # ---------------------------------------------------------------------
         # Calculate features
@@ -1284,13 +1263,13 @@ def main():
             verbose=options.verbose
         )
         if options.verbose:
-            sys.stdout.write("After add_features_to_terminal_exon_" +
-                             "candidates_dataframe..." + os.linesep)
+            LOGGER.info("After add_features_to_terminal_exon_" +
+                             "candidates_dataframe...")
     
         # ---------------------------------------------------------------------
         # Train a classifier
         # ---------------------------------------------------------------------
-        sys.stdout.write("Training and validating classifiers..." + os.linesep)
+        LOGGER.info("Training and validating classifiers...")
         # ["Bayes", "KNeighbors", "multiclass_SVC"]
         for classifier in ["Bayes"]:
     
@@ -1606,24 +1585,23 @@ def main():
     # -------------------------------------------------------------------------
     # Read genome file
     # -------------------------------------------------------------------------
-    sys.stdout.write("Reading genome file ..." + os.linesep)
+    LOGGER.info("Reading genome file ...")
     genome = Fasta(genome_internal_path)
 
     # _________________________________________________________________________
     # -------------------------------------------------------------------------
     # Annotate CDS for novel transcripts
     # -------------------------------------------------------------------------
-    sys.stdout.write(
-        "Annotating CDS for novel transcripts (novel splicing)..." +
-        os.linesep)
+    LOGGER.info(
+        "Annotating CDS for novel transcripts (novel splicing)...")
     annotation.determine_CDS_novel_transcrtips_from_spicing(genome)
 
     # _________________________________________________________________________
     # -------------------------------------------------------------------------
     # Write novel GTF file
     # -------------------------------------------------------------------------
-    sys.stdout.write(
-        "Writing GTF file for known and novel transcripts ..." + os.linesep)
+    LOGGER.info(
+        "Writing GTF file for known and novel transcripts ...")
     output_file = "enriched_annotation.gtf"
     output_file_path = os.path.join(options.output_dir, output_file)
     w = open(output_file_path, 'w')
