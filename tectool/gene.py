@@ -4,6 +4,7 @@ from collections import defaultdict
 from itertools import chain
 flatten = chain.from_iterable
 import itertools
+from intervalset import Interval, IntervalSet
 
 
 class Gene(object):

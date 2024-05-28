@@ -1183,7 +1183,7 @@ class AnalysisUnit:
                                                     novelTranscript.novel_exons.append(novelExon)
 
                                             else:
-                                                stderr.write("[ERROR] Problem with strand info.")
+                                                sys.stderr.write("[ERROR] Problem with strand info.")
                                                 sys.exit(-1)
 
     def keep_novel_exon(self, profile_list, threshold=0.2):

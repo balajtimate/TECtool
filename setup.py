@@ -6,14 +6,15 @@ if sys.version_info < (3, 4):
 
 requirements = [
     "numpy>=0.13",
-    "scipy==0.19",
-    "htseq==0.9.1",
-    "pybedtools==0.7.10",
+    "scipy==1.5.4",
+    "htseq==0.13.5",
+    "pybedtools",
     "pyfasta==0.5.2",
-    "scikit-learn==0.19.0",
+    "scikit-learn==0.24.2",
     "pandas==0.20.3",
     "matplotlib==2.0.2",
-    "progress==1.3"
+    "progress==1.3",
+    "pysam==0.19.0"
 ]
 
 setup(

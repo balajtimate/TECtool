@@ -24,8 +24,8 @@ from sklearn.model_selection import train_test_split
 from sklearn import neighbors
 from scipy import stats
 from scipy.optimize import curve_fit
-# import matplotlib as mpl
-# import matplotlib.pyplot as plt
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 import pandas as pd
 import pybedtools
 from progress.bar import Bar
