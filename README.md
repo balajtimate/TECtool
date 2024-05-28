@@ -240,6 +240,8 @@ The following options are available and should be set by the user:
 
 * *--output_dir* DIRECTORY: The path to the output directory. [default="." (current working directory)]
 
+* *--num_cores* INT: Number of cores to use for parallel processing. [default=1]
+
 * *--verbose* Be Verbose
 
 * *--version* show program's version number and exit
